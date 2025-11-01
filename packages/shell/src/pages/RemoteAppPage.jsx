@@ -1,0 +1,71 @@
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import RemoteApp from '../components/RemoteApp';
+import api from '../services/api';
+
+export default function RemoteAppPage() {
+  const { appId } = useParams();
+  const [appConfig, setAppConfig] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchAppConfig();
+  }, [appId]);
+
+  const fetchAppConfig = async () => {
+    try {
+      const response = await api.get('/me/screens');
+      const app = response.data.find(s => s.id === appId);
+      
+      if (!app) {
+        setError('App not found');
+      } else {
+        setAppConfig(app);
+      }
+    } catch (err) {
+      setError('Failed to load app configuration');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return (
+      <div style={styles.error}>
+        <h2>Error</h2>
+        <p>{error}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <h1 style={styles.title}>{appConfig.name}</h1>
+      <RemoteApp 
+        scope={appConfig.scope}
+        module={appConfig.module}
+        url={appConfig.url}
+      />
+    </div>
+  );
+}
+
+const styles = {
+  title: {
+    fontSize: '24px',
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: '24px',
+  },
+  error: {
+    padding: '24px',
+    background: 'white',
+    borderRadius: '8px',
+    color: '#c33',
+  },
+};
