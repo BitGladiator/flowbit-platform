@@ -299,7 +299,7 @@ Suhani Pandey
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 Built as part of a technical challenge to demonstrate:
 
