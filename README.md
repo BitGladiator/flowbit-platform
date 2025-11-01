@@ -1,4 +1,4 @@
-# 🚀 Flowbit Platform - Multi-Tenant SaaS Application
+#  Flowbit Platform - Multi-Tenant SaaS Application
 
 A complete multi-tenant support ticket management system built with:
 
@@ -9,7 +9,7 @@ A complete multi-tenant support ticket management system built with:
 
 ---
 
-## 🏗️ Architecture
+##  Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -51,9 +51,9 @@ A complete multi-tenant support ticket management system built with:
 
 ---
 
-## ✨ Features
+##  Features
 
-### ✅ Completed (Phases 1-4)
+### Completed (Phases 1-4)
 
 - **Multi-Tenancy**: Complete data isolation between tenants
 - **Authentication**: JWT-based login with role-based access control
@@ -61,7 +61,7 @@ A complete multi-tenant support ticket management system built with:
 - **Micro-frontends**: Module Federation for dynamic app loading
 - **Responsive UI**: Modern, clean interface
 
-### 🔜 Coming Soon (Phases 5-7)
+### Coming Soon (Phases 5-7)
 
 - **n8n Workflow**: Automated ticket processing
 - **Docker**: Containerized deployment
@@ -70,7 +70,7 @@ A complete multi-tenant support ticket management system built with:
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Prerequisites
 
@@ -134,7 +134,7 @@ RetailGmbH Admin: admin@retailgmbh.com / password123
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 flowbit-platform/
@@ -172,7 +172,7 @@ flowbit-platform/
 
 ---
 
-## 🔑 Key Technologies
+##  Key Technologies
 
 - **Backend**: Node.js, Express, MongoDB, Mongoose
 - **Frontend**: React 18, React Router
@@ -183,7 +183,7 @@ flowbit-platform/
 
 ---
 
-## 🧪 Testing
+##  Testing
 
 ### Test Tenant Isolation
 
@@ -201,7 +201,7 @@ flowbit-platform/
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Port Already in Use
 
@@ -278,42 +278,24 @@ await User.create({
 
 ---
 
-## 🤝 Contributing
+##  Contributing
 
 This is a technical challenge project. Not open for contributions.
 
 ---
 
-## 📄 License
+##  License
 
 MIT License - See LICENSE file for details
 
 ---
 
-## 👤 Author
+##  Author
 
-**Your Name**
+Suhani Pandey
 
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Email: your.email@example.com
-
----
-
-## 🎯 Roadmap
-
-- [x] Phase 1: Database Setup
-- [x] Phase 2: API Backend
-- [x] Phase 3: React Shell
-- [x] Phase 4: Tickets Micro-Frontend
-- [ ] Phase 5: n8n Workflow Integration
-- [ ] Phase 6: Docker Compose Setup
-- [ ] Phase 7: Testing & CI/CD
-
----
-
-## 📸 Screenshots
-
-_(Add screenshots here after Phase 5)_
+- GitHub: https://github.com/suhani-prog
+- Email: pandeysuhani30@gmail.com
 
 ---
 
