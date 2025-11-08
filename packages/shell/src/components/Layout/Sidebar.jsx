@@ -36,7 +36,7 @@ export default function Sidebar() {
             ...(location.pathname === '/dashboard' ? styles.navItemActive : {})
           }}
         >
-          📊 Dashboard
+          Dashboard
         </Link>
         
         {screens.map((screen) => (
@@ -48,7 +48,7 @@ export default function Sidebar() {
               ...(location.pathname === `/app/${screen.id}` ? styles.navItemActive : {})
             }}
           >
-            🎫 {screen.name}
+            {screen.name}
           </Link>
         ))}
       </nav>

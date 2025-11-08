@@ -2,11 +2,7 @@ const express = require('express');
 const authenticateToken = require('../middleware/auth');
 const { getScreensForCustomer } = require('../services/screenService');
 const router = express.Router();
-
-// All routes require authentication
 router.use(authenticateToken);
-
-// GET /api/me/screens - Get available screens for user's tenant
 router.get('/screens', (req, res) => {
   try {
     const screens = getScreensForCustomer(req.user.customerId);
@@ -15,8 +11,6 @@ router.get('/screens', (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-// GET /api/me/profile - Get current user's profile
 router.get('/profile', (req, res) => {
   res.json({
     userId: req.user.userId,

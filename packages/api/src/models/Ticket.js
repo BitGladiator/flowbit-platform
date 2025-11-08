@@ -4,7 +4,7 @@ const ticketSchema = new mongoose.Schema({
   customerId: { 
     type: String, 
     required: true, 
-    index: true  // Critical for performance
+    index: true  
   },
   title: { 
     type: String, 
@@ -33,8 +33,6 @@ const ticketSchema = new mongoose.Schema({
 }, { 
   timestamps: true 
 });
-
-// Index for faster queries
 ticketSchema.index({ customerId: 1, status: 1 });
 
 module.exports = mongoose.model('Ticket', ticketSchema);

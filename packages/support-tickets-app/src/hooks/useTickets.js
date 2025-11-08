@@ -7,11 +7,7 @@ export function useTickets() {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Get token from localStorage (set by Shell)
   const getToken = () => localStorage.getItem('token');
-
-  // Fetch all tickets
   const fetchTickets = useCallback(async () => {
     try {
       setLoading(true);
@@ -36,8 +32,6 @@ export function useTickets() {
       setLoading(false);
     }
   }, []);
-
-  // Create new ticket
   const createTicket = async (ticketData) => {
     try {
       const token = getToken();
@@ -51,8 +45,6 @@ export function useTickets() {
           },
         }
       );
-
-      // Add new ticket to list
       setTickets((prev) => [response.data, ...prev]);
       return { success: true, ticket: response.data };
     } catch (err) {
@@ -63,8 +55,6 @@ export function useTickets() {
       };
     }
   };
-
-  // Update ticket
   const updateTicket = async (ticketId, updates) => {
     try {
       const token = getToken();
@@ -78,8 +68,6 @@ export function useTickets() {
           },
         }
       );
-
-      // Update ticket in list
       setTickets((prev) =>
         prev.map((t) => (t._id === ticketId ? response.data : t))
       );
@@ -93,8 +81,6 @@ export function useTickets() {
       };
     }
   };
-
-  // Delete ticket
   const deleteTicket = async (ticketId) => {
     try {
       const token = getToken();
@@ -104,8 +90,6 @@ export function useTickets() {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      // Remove ticket from list
       setTickets((prev) => prev.filter((t) => t._id !== ticketId));
       return { success: true };
     } catch (err) {
@@ -116,13 +100,9 @@ export function useTickets() {
       };
     }
   };
-
-  // Fetch tickets on mount
   useEffect(() => {
     fetchTickets();
   }, [fetchTickets]);
-
-  // Poll for updates every 3 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       fetchTickets();

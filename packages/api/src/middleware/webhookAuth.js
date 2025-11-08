@@ -6,11 +6,11 @@ function verifyWebhookSecret(req, res, next) {
   }
 
   if (secret !== process.env.WEBHOOK_SECRET) {
-    console.error('❌ Invalid webhook secret received');
+    console.error('Invalid webhook secret received');
     return res.status(403).json({ error: 'Invalid webhook secret' });
   }
 
-  console.log('✅ Webhook authenticated');
+  console.log('Webhook authenticated');
   next();
 }
 

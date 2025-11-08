@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
   customerId: { 
     type: String, 
     required: true, 
-    index: true  // Makes queries faster
+    index: true 
   },
   role: { 
     type: String, 
@@ -29,8 +29,6 @@ const userSchema = new mongoose.Schema({
 }, { 
   timestamps: true 
 });
-
-// Don't return password when converting to JSON
 userSchema.methods.toJSON = function() {
   const user = this.toObject();
   delete user.password;

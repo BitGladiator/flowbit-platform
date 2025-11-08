@@ -4,7 +4,7 @@ const customerSchema = new mongoose.Schema({
   _id: { 
     type: String, 
     required: true 
-  }, // "LogisticsCo", "RetailGmbH"
+  },
   name: { 
     type: String, 
     required: true 
@@ -19,7 +19,7 @@ const customerSchema = new mongoose.Schema({
     default: true 
   }
 }, { 
-  timestamps: true  // Adds createdAt and updatedAt automatically
+  timestamps: true  
 });
 
 module.exports = mongoose.model('Customer', customerSchema);

@@ -6,28 +6,24 @@ const Ticket = require('./src/models/Ticket');
 async function testConnection() {
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    console.log('✅ Connected to MongoDB');
-
-    // Count documents
+    console.log('Connected to MongoDB');
     const userCount = await User.countDocuments();
     const ticketCount = await Ticket.countDocuments();
 
-    console.log(`\n📊 Database Stats:`);
+    console.log(`\nDatabase Stats:`);
     console.log(`   Users: ${userCount}`);
     console.log(`   Tickets: ${ticketCount}`);
-
-    // Test tenant isolation
-    console.log(`\n🔒 Testing Tenant Isolation:`);
+    console.log(`\nTesting Tenant Isolation:`);
     const logisticsTickets = await Ticket.find({ customerId: 'LogisticsCo' });
     const retailTickets = await Ticket.find({ customerId: 'RetailGmbH' });
     
     console.log(`   LogisticsCo tickets: ${logisticsTickets.length}`);
     console.log(`   RetailGmbH tickets: ${retailTickets.length}`);
 
-    console.log('\n✅ All tests passed!');
+    console.log('\nAll tests passed!');
     process.exit(0);
   } catch (error) {
-    console.error('❌ Error:', error);
+    console.error('Error:', error);
     process.exit(1);
   }
 }

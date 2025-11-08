@@ -15,7 +15,6 @@ export default function TicketForm({ onSubmit, onCancel }) {
     const result = await onSubmit({ title, description, priority });
 
     if (result.success) {
-      // Reset form
       setTitle('');
       setDescription('');
       setPriority('medium');

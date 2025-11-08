@@ -1,13 +1,9 @@
 const express = require('express');
 const { login, register } = require('../services/authService');
 const router = express.Router();
-
-// POST /api/auth/login
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // Validate input
     if (!email || !password) {
       return res.status(400).json({ error: 'Email and password are required' });
     }
@@ -18,13 +14,9 @@ router.post('/login', async (req, res) => {
     res.status(401).json({ error: error.message });
   }
 });
-
-// POST /api/auth/register
 router.post('/register', async (req, res) => {
   try {
     const { email, password, customerId, role } = req.body;
-
-    // Validate input
     if (!email || !password || !customerId) {
       return res.status(400).json({ 
         error: 'Email, password, and customerId are required' 

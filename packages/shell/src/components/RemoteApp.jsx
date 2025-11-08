@@ -3,13 +3,10 @@ import React, { Suspense, lazy } from 'react';
 export default function RemoteApp({ scope, module, url }) {
   const RemoteComponent = lazy(() => {
     return new Promise((resolve, reject) => {
-      // Check if remote is already loaded
       if (window[scope]) {
         resolve(loadComponent(scope, module));
         return;
       }
-
-      // Load remote script
       const script = document.createElement('script');
       script.src = url;
       script.onload = () => {
