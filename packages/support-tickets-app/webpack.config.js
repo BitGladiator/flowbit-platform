@@ -5,11 +5,11 @@ module.exports = {
   entry: './src/index.js',
   mode: 'development',
   devServer: {
-    port: 3002,  // Different port from shell
+    port: 3002,  
     historyApiFallback: true,
     hot: true,
     headers: {
-      'Access-Control-Allow-Origin': '*',  // Allow cross-origin requests
+      'Access-Control-Allow-Origin': '*',  
     },
   },
   output: {
@@ -37,10 +37,10 @@ module.exports = {
   },
   plugins: [
     new ModuleFederationPlugin({
-      name: 'supportTicketsApp',  // Must match registry.json
+      name: 'supportTicketsApp', 
       filename: 'remoteEntry.js',
       exposes: {
-        './App': './src/App',  // Expose App component
+        './App': './src/App',  
       },
       shared: {
         react: { singleton: true, requiredVersion: '^18.2.0' },

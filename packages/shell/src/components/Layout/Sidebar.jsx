@@ -77,8 +77,6 @@ export default function Sidebar() {
     </aside>
   );
 }
-
-// SVG Icons
 const DashboardIcon = () => (
   <svg
     width="20"
