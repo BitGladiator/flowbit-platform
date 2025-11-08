@@ -29,7 +29,7 @@ const styles = {
   },
   content: {
     flex: 1,
-    padding: '24px',
+
     background: '#f5f5f5',
     overflow: 'auto',
   },
