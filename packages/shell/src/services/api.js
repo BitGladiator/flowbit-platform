@@ -7,7 +7,6 @@ const api = axios.create({
   },
 });
 
-// Add request interceptor for logging
 api.interceptors.request.use(
   (config) => {
     console.log(`→ ${config.method.toUpperCase()} ${config.url}`);
