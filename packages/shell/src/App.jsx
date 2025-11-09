@@ -6,6 +6,7 @@ import ProtectedRoute from './components/Auth/ProtectedRoute';
 import Layout from './components/Layout/Layout';
 import Dashboard from './pages/Dashboard';
 import RemoteAppPage from './pages/RemoteAppPage';
+import Register from './components/Auth/Register';
 
 export default function App() {
   return (
@@ -13,7 +14,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
-          
+          <Route path='/register' element={<Register/>}/>
           <Route
             path="/dashboard"
             element={
