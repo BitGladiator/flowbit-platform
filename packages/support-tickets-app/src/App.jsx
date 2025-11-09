@@ -18,7 +18,12 @@ export default function App() {
   };
 
   const handleUpdateTicket = async (ticketId, updates) => {
-    await updateTicket(ticketId, updates);
+    const result = await updateTicket(ticketId, updates);
+    
+    if (result.success) {
+      return result;
+    }
+    return result;
   };
 
   if (loading && tickets.length === 0) {

@@ -15,11 +15,7 @@ export default function TicketDetail({ ticket, onClose, onUpdate }) {
       const result = await onUpdate(currentTicket._id, { status: newStatus });
 
       if (result && result.success) {
-        setCurrentTicket((prev) => ({
-          ...prev,
-          status: newStatus,
-          updatedAt: new Date().toISOString(),
-        }));
+        setCurrentTicket(result.ticket);
       } else {
         console.error("Failed to update ticket:", result?.error);
       }
@@ -588,17 +584,16 @@ const styles = {
     marginLeft: "8px",
     fontWeight: "bold",
   },
-
   loadingSpinner: {
     marginLeft: "8px",
     animation: "spin 1s linear infinite",
   },
-
   buttonDisabled: {
     opacity: 0.6,
     cursor: "not-allowed",
   },
 };
+
 const spinAnimation = `
 @keyframes spin {
   0% { transform: rotate(0deg); }
@@ -610,24 +605,3 @@ if (typeof document !== "undefined") {
   style.textContent = spinAnimation;
   document.head.append(style);
 }
-Object.assign(styles.closeButton, {
-  ":hover": {
-    background: "rgba(255,255,255,0.1)",
-    borderColor: "#444",
-    color: "#ffffff",
-  },
-});
-
-Object.assign(styles.statusButton, {
-  ":hover": {
-    background: "rgba(255,255,255,0.08)",
-    borderColor: "#444",
-    transform: "translateX(4px)",
-  },
-});
-
-Object.assign(styles.section, {
-  ":hover": {
-    borderColor: "#444",
-  },
-});
