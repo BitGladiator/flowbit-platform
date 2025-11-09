@@ -178,8 +178,6 @@ export default function Login() {
     </div>
   );
 }
-
-// SVG Icons
 const BuildingIcon = () => (
   <svg
     width="48"
@@ -768,8 +766,6 @@ const styles = {
     fontWeight: "500",
   },
 };
-
-// Add CSS hover effects
 const hoverStyles = `
   .login-input:focus {
     border-color: #00d4ff;
@@ -788,8 +784,6 @@ const hoverStyles = `
     transform: translateY(-1px);
   }
 `;
-
-// Apply hover effects
 Object.assign(styles.input, {
   ":focus": {
     borderColor: "#00d4ff",
