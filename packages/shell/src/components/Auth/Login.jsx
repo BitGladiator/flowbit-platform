@@ -7,7 +7,11 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isRegister, setIsRegister] = useState(false);
+  const [name, setName] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const { login } = useAuth();
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -15,14 +19,16 @@ export default function Login() {
     setError("");
     setLoading(true);
 
-    const result = await login(email, password);
-
-    if (result.success) {
-      navigate("/dashboard");
+    if (isRegister) {
+      if (password !== confirmPassword) {
+        setError("Passwords don't match");
+        setLoading(false);
+        return;
+      }
+      const result = await register(name, email, password);
     } else {
-      setError(result.error);
+      const result = await login(email, password);
     }
-
     setLoading(false);
   };
 
@@ -87,7 +93,21 @@ export default function Login() {
                   />
                 </div>
               </div>
-
+              {isRegister && (
+                <div style={styles.inputGroup}>
+                  <div style={styles.inputContainer}>
+                    <UserIcon />
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      style={styles.input}
+                      placeholder="Full Name"
+                      required={isRegister}
+                    />
+                  </div>
+                </div>
+              )}
               <div style={styles.inputGroup}>
                 <div style={styles.inputContainer}>
                   <LockIcon />
@@ -101,7 +121,21 @@ export default function Login() {
                   />
                 </div>
               </div>
-
+              {isRegister && (
+                <div style={styles.inputGroup}>
+                  <div style={styles.inputContainer}>
+                    <LockIcon />
+                    <input
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      style={styles.input}
+                      placeholder="Confirm Password"
+                      required={isRegister}
+                    />
+                  </div>
+                </div>
+              )}
               {error && (
                 <div style={styles.error}>
                   <AlertIcon />
@@ -121,12 +155,12 @@ export default function Login() {
                 {loading ? (
                   <>
                     <LoadingSpinner />
-                    Authenticating...
+                    {isRegister ? "Creating Account..." : "Authenticating..."}
                   </>
                 ) : (
                   <>
                     <LoginIcon />
-                    Sign In to Dashboard
+                    {isRegister ? "Create Account" : "Sign In to Dashboard"}
                   </>
                 )}
               </button>
@@ -164,6 +198,18 @@ export default function Login() {
             <div style={styles.footer}>
               <p style={styles.hint}>
                 Demo credentials: <code style={styles.code}>password123</code>
+              </p>
+              <p style={styles.support}>
+                {isRegister
+                  ? "Already have an account? "
+                  : "Don't have an account? "}
+                <button
+                  type="button"
+                  onClick={() => setIsRegister(!isRegister)}
+                  style={styles.linkButton}
+                >
+                  {isRegister ? "Sign in" : "Create account"}
+                </button>
               </p>
               <p style={styles.support}>
                 Enterprise support:{" "}
@@ -426,7 +472,28 @@ const ArrowIcon = () => (
     />
   </svg>
 );
-
+const UserIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M20 21V19C20 16.7909 18.2091 15 16 15H8C5.79086 15 4 16.7909 4 19V21"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+    <path
+      d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+  </svg>
+);
 const ShieldIcon = () => (
   <svg
     width="18"
@@ -594,6 +661,15 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     gap: "20px",
+  },
+  linkButton: {
+    background: "none",
+    border: "none",
+    color: "#00d4ff",
+    textDecoration: "underline",
+    cursor: "pointer",
+    fontSize: "12px",
+    padding: 0,
   },
   feature: {
     display: "flex",
