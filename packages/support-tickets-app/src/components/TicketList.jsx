@@ -1,7 +1,7 @@
 import React from 'react';
 
-export default function TicketList({ tickets, onTicketClick, loading }) {
-  if (loading) {
+export default function TicketList({ tickets, onTicketClick, loading = false }) {
+  if (loading && tickets.length === 0) {
     return (
       <div style={styles.loading}>
         <LoadingSpinner />
@@ -9,8 +9,7 @@ export default function TicketList({ tickets, onTicketClick, loading }) {
       </div>
     );
   }
-
-  if (tickets.length === 0) {
+  if (!loading && tickets.length === 0) {
     return (
       <div style={styles.empty}>
         <div style={styles.emptyIcon}>
@@ -58,7 +57,7 @@ export default function TicketList({ tickets, onTicketClick, loading }) {
           
           <div style={styles.footer}>
             <div style={styles.footerLeft}>
-              <span style={styles.id}>#{ticket._id.slice(-6)}</span>
+              <span style={styles.id}>#{ticket._id?.slice(-6) || 'N/A'}</span>
             </div>
             <div style={styles.footerRight}>
               <span style={styles.viewDetails}>

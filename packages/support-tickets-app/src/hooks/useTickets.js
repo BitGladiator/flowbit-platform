@@ -7,7 +7,9 @@ export function useTickets() {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
   const getToken = () => localStorage.getItem('token');
+
   const fetchTickets = useCallback(async () => {
     try {
       setLoading(true);
@@ -32,6 +34,7 @@ export function useTickets() {
       setLoading(false);
     }
   }, []);
+
   const createTicket = async (ticketData) => {
     try {
       const token = getToken();
@@ -55,6 +58,7 @@ export function useTickets() {
       };
     }
   };
+
   const updateTicket = async (ticketId, updates) => {
     try {
       const token = getToken();
@@ -71,7 +75,7 @@ export function useTickets() {
       setTickets((prev) =>
         prev.map((t) => (t._id === ticketId ? response.data : t))
       );
-
+  
       return { success: true, ticket: response.data };
     } catch (err) {
       console.error('Error updating ticket:', err);
@@ -81,6 +85,7 @@ export function useTickets() {
       };
     }
   };
+
   const deleteTicket = async (ticketId) => {
     try {
       const token = getToken();
@@ -102,13 +107,6 @@ export function useTickets() {
   };
   useEffect(() => {
     fetchTickets();
-  }, [fetchTickets]);
-  useEffect(() => {
-    const interval = setInterval(() => {
-      fetchTickets();
-    }, 3000);
-
-    return () => clearInterval(interval);
   }, [fetchTickets]);
 
   return {
