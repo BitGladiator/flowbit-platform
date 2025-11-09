@@ -10,7 +10,7 @@ export default function Login() {
   const [isRegister, setIsRegister] = useState(false);
   const [name, setName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const { login } = useAuth();
+  const { login, register } = useAuth();
 
   const navigate = useNavigate();
 
@@ -19,22 +19,51 @@ export default function Login() {
     setError("");
     setLoading(true);
 
-    if (isRegister) {
-      if (password !== confirmPassword) {
-        setError("Passwords don't match");
-        setLoading(false);
-        return;
+    try {
+      if (isRegister) {
+        if (password !== confirmPassword) {
+          setError("Passwords don't match");
+          setLoading(false);
+          return;
+        }
+        if (password.length < 6) {
+          setError("Password must be at least 6 characters");
+          setLoading(false);
+          return;
+        }
+        const result = await register(name, email, password);
+        if (result.success) {
+          navigate("/dashboard");
+        } else {
+          setError(result.error);
+        }
+      } else {
+        const result = await login(email, password);
+        if (result.success) {
+          navigate("/dashboard");
+        } else {
+          setError(result.error);
+        }
       }
-      const result = await register(name, email, password);
-    } else {
-      const result = await login(email, password);
+    } catch (err) {
+      setError("An unexpected error occurred");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const quickLogin = (userEmail) => {
     setEmail(userEmail);
     setPassword("password123");
+  };
+
+  const toggleMode = () => {
+    setIsRegister(!isRegister);
+    setError("");
+    if (!isRegister) {
+      setName("");
+      setConfirmPassword("");
+    }
   };
 
   return (
@@ -75,8 +104,14 @@ export default function Login() {
         <div style={styles.rightPanel}>
           <div style={styles.loginCard}>
             <div style={styles.loginHeader}>
-              <h2 style={styles.loginTitle}>Welcome Back</h2>
-              <p style={styles.loginSubtitle}>Sign in to your tenant account</p>
+              <h2 style={styles.loginTitle}>
+                {isRegister ? "Create Account" : "Welcome Back"}
+              </h2>
+              <p style={styles.loginSubtitle}>
+                {isRegister
+                  ? "Join your enterprise platform"
+                  : "Sign in to your tenant account"}
+              </p>
             </div>
 
             <form onSubmit={handleSubmit} style={styles.form}>
@@ -93,6 +128,7 @@ export default function Login() {
                   />
                 </div>
               </div>
+
               {isRegister && (
                 <div style={styles.inputGroup}>
                   <div style={styles.inputContainer}>
@@ -108,6 +144,7 @@ export default function Login() {
                   </div>
                 </div>
               )}
+
               <div style={styles.inputGroup}>
                 <div style={styles.inputContainer}>
                   <LockIcon />
@@ -121,6 +158,7 @@ export default function Login() {
                   />
                 </div>
               </div>
+
               {isRegister && (
                 <div style={styles.inputGroup}>
                   <div style={styles.inputContainer}>
@@ -136,6 +174,7 @@ export default function Login() {
                   </div>
                 </div>
               )}
+
               {error && (
                 <div style={styles.error}>
                   <AlertIcon />
@@ -166,34 +205,38 @@ export default function Login() {
               </button>
             </form>
 
-            <div style={styles.divider}>
-              <span style={styles.dividerText}>Quick Tenant Access</span>
-            </div>
+            {!isRegister && (
+              <>
+                <div style={styles.divider}>
+                  <span style={styles.dividerText}>Quick Tenant Access</span>
+                </div>
 
-            <div style={styles.quickLogin}>
-              <button
-                onClick={() => quickLogin("admin@logisticsco.com")}
-                style={styles.quickButton}
-              >
-                <TenantIcon />
-                <div style={styles.tenantInfo}>
-                  <span style={styles.tenantName}>LogisticsCo</span>
-                  <span style={styles.tenantRole}>Administrator</span>
+                <div style={styles.quickLogin}>
+                  <button
+                    onClick={() => quickLogin("admin@logisticsco.com")}
+                    style={styles.quickButton}
+                  >
+                    <TenantIcon />
+                    <div style={styles.tenantInfo}>
+                      <span style={styles.tenantName}>LogisticsCo</span>
+                      <span style={styles.tenantRole}>Administrator</span>
+                    </div>
+                    <ArrowIcon />
+                  </button>
+                  <button
+                    onClick={() => quickLogin("admin@retailgmbh.com")}
+                    style={styles.quickButton}
+                  >
+                    <TenantIcon />
+                    <div style={styles.tenantInfo}>
+                      <span style={styles.tenantName}>RetailGmbH</span>
+                      <span style={styles.tenantRole}>Administrator</span>
+                    </div>
+                    <ArrowIcon />
+                  </button>
                 </div>
-                <ArrowIcon />
-              </button>
-              <button
-                onClick={() => quickLogin("admin@retailgmbh.com")}
-                style={styles.quickButton}
-              >
-                <TenantIcon />
-                <div style={styles.tenantInfo}>
-                  <span style={styles.tenantName}>RetailGmbH</span>
-                  <span style={styles.tenantRole}>Administrator</span>
-                </div>
-                <ArrowIcon />
-              </button>
-            </div>
+              </>
+            )}
 
             <div style={styles.footer}>
               <p style={styles.hint}>
@@ -205,7 +248,7 @@ export default function Login() {
                   : "Don't have an account? "}
                 <button
                   type="button"
-                  onClick={() => setIsRegister(!isRegister)}
+                  onClick={toggleMode}
                   style={styles.linkButton}
                 >
                   {isRegister ? "Sign in" : "Create account"}
@@ -472,6 +515,7 @@ const ArrowIcon = () => (
     />
   </svg>
 );
+
 const UserIcon = () => (
   <svg
     width="20"
@@ -494,6 +538,7 @@ const UserIcon = () => (
     />
   </svg>
 );
+
 const ShieldIcon = () => (
   <svg
     width="18"
@@ -661,15 +706,6 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     gap: "20px",
-  },
-  linkButton: {
-    background: "none",
-    border: "none",
-    color: "#00d4ff",
-    textDecoration: "underline",
-    cursor: "pointer",
-    fontSize: "12px",
-    padding: 0,
   },
   feature: {
     display: "flex",
@@ -841,6 +877,15 @@ const styles = {
     textDecoration: "none",
     fontWeight: "500",
   },
+  linkButton: {
+    background: "none",
+    border: "none",
+    color: "#00d4ff",
+    textDecoration: "underline",
+    cursor: "pointer",
+    fontSize: "12px",
+    padding: 0,
+  },
 };
 const hoverStyles = `
   .login-input:focus {
@@ -889,10 +934,8 @@ Object.assign(styles.quickButton, {
     transform: "translateY(-1px)",
   },
 });
-styles.inputContainer["::before"] = {
-  content: '""',
-  position: "absolute",
-  left: "16px",
-  zIndex: 1,
-  color: "rgba(255,255,255,0.5)",
-};
+if (typeof document !== "undefined") {
+  const style = document.createElement("style");
+  style.textContent = hoverStyles;
+  document.head.appendChild(style);
+}
