@@ -6,7 +6,6 @@ import api from "../services/api";
 export default function RemoteAppPage() {
   const { appId } = useParams();
   const [appConfig, setAppConfig] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -25,14 +24,8 @@ export default function RemoteAppPage() {
       }
     } catch (err) {
       setError("Failed to load app configuration");
-    } finally {
-      setLoading(false);
     }
   };
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   if (error) {
     return (
@@ -41,6 +34,11 @@ export default function RemoteAppPage() {
         <p>{error}</p>
       </div>
     );
+  }
+
+  
+  if (!appConfig) {
+    return null; 
   }
 
   return (
@@ -55,12 +53,6 @@ export default function RemoteAppPage() {
 }
 
 const styles = {
-  title: {
-    fontSize: "24px",
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: "24px",
-  },
   error: {
     padding: "24px",
     background: "white",
