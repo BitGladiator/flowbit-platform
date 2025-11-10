@@ -5,8 +5,9 @@ import Login from './components/Auth/Login';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import Layout from './components/Layout/Layout';
 import Dashboard from './pages/Dashboard';
+import UserDashboard from './pages/UserDashboard';
+import EmployeeManagement from './pages/EmployeeManagement';
 import RemoteAppPage from './pages/RemoteAppPage';
-import Register from './components/Auth/Register';
 
 export default function App() {
   return (
@@ -14,13 +15,35 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path='/register' element={<Register/>}/>
+          
           <Route
             path="/dashboard"
             element={
               <ProtectedRoute>
                 <Layout>
                   <Dashboard />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/my-dashboard"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <UserDashboard />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/employees"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <EmployeeManagement />
                 </Layout>
               </ProtectedRoute>
             }

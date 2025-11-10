@@ -30,6 +30,9 @@ export default function Header() {
           <div style={styles.userDetails}>
             <span style={styles.userName}>{user?.email}</span>
             <div style={styles.userMeta}>
+              <span style={styles.userName}>
+                {user?.firstName} {user?.lastName}
+              </span>
               <span style={styles.userTenant}>{user?.customerId}</span>
               <span style={styles.userRole}>{user?.role}</span>
             </div>

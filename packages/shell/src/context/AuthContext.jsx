@@ -58,12 +58,13 @@ export function AuthProvider({ children }) {
     try {
       const response = await api.post('/auth/login', { email, password });
       const { token, user: userData } = response.data;
-    
       const safeUserData = {
         id: userData.id,
         email: userData.email,
-        name: userData.name,
-        ...(userData.role && { role: userData.role })
+        customerId: userData.customerId,
+        role: userData.role,
+        firstName: userData.firstName,
+        lastName: userData.lastName
       };
       
       localStorage.setItem('token', token);

@@ -34,7 +34,9 @@ async function login(email, password) {
         id: user._id,
         email: user.email,
         customerId: user.customerId,
-        role: user.role
+        role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName
       }
     };
   } catch (error) {
