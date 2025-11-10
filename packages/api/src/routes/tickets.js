@@ -6,13 +6,16 @@ const router = express.Router();
 router.use(authenticateToken);
 router.get('/', async (req, res) => {
   try {
-    const tickets = await Ticket.find({ 
-      customerId: req.user.customerId 
-    })
-    .populate('createdBy', 'email')
-    .sort({ createdAt: -1 }); 
+    let query = { customerId: req.user.customerId };
+    if (req.user.role !== 'Admin') {
+      query.createdBy = req.user.userId;
+    }
 
-    console.log(`Fetched ${tickets.length} tickets for ${req.user.customerId}`);
+    const tickets = await Ticket.find(query)
+      .populate('createdBy', 'email firstName lastName')
+      .sort({ createdAt: -1 }); 
+
+    console.log(`Fetched ${tickets.length} tickets for ${req.user.email}`);
     res.json(tickets);
   } catch (error) {
     console.error('Error fetching tickets:', error);

@@ -35,25 +35,33 @@ async function seedDatabase() {
         email: 'admin@logisticsco.com',
         password: hashedPassword,
         customerId: 'LogisticsCo',
-        role: 'Admin'
+        role: 'Admin',
+        firstName: 'John',
+        lastName: 'Doe'
       },
       {
         email: 'user@logisticsco.com',
         password: hashedPassword,
         customerId: 'LogisticsCo',
-        role: 'User'
+        role: 'User',
+        firstName: 'Jane',
+        lastName: 'Smith'
       },
       {
         email: 'admin@retailgmbh.com',
         password: hashedPassword,
         customerId: 'RetailGmbH',
-        role: 'Admin'
+        role: 'Admin',
+        firstName: 'Michael',
+        lastName: 'Brown'
       },
       {
         email: 'user@retailgmbh.com',
         password: hashedPassword,
         customerId: 'RetailGmbH',
-        role: 'User'
+        role: 'User',
+        firstName: 'Sarah',
+        lastName: 'Johnson'
       }
     ]);
     console.log('Created 4 users (2 per tenant)');

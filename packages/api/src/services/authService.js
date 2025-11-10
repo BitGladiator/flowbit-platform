@@ -43,18 +43,22 @@ async function login(email, password) {
   }
 }
 
-async function register(email, password, customerId, role = 'User') {
+async function register(email, password, customerId, role = 'User', firstName, lastName) {
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       throw new Error('Email already registered');
     }
+
     const hashedPassword = await bcrypt.hash(password, 10);
+    
     const user = await User.create({
       email,
       password: hashedPassword,
       customerId,
-      role
+      role,
+      firstName: firstName || 'User',
+      lastName: lastName || 'Name'
     });
 
     console.log(`User registered: ${email} (${customerId})`);
@@ -63,7 +67,9 @@ async function register(email, password, customerId, role = 'User') {
       id: user._id,
       email: user.email,
       customerId: user.customerId,
-      role: user.role
+      role: user.role,
+      firstName: user.firstName,
+      lastName: user.lastName
     };
   } catch (error) {
     console.error('Registration error:', error.message);
