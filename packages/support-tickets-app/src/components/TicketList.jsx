@@ -12,6 +12,9 @@ export default function TicketList({
   const handleDeleteClick = async (ticket, e) => {
     e.stopPropagation(); 
     if (!onDeleteTicket) return;
+    if (!window.confirm(`Are you sure you want to delete "${ticket.title}"?`)) {
+      return;
+    }
 
     setDeletingId(ticket._id);
     try {
@@ -106,7 +109,7 @@ export default function TicketList({
             </div>
             <div style={styles.footerRight}>
               <span style={styles.viewDetails}>
-                View Details
+                View Detais
                 <ArrowIcon />
               </span>
             </div>
@@ -116,6 +119,7 @@ export default function TicketList({
     </div>
   );
 }
+
 function getStatusStyle(status) {
   const baseStyle = {
     padding: "6px 12px",
@@ -169,6 +173,7 @@ function getPriorityStyle(priority) {
 
   return { ...baseStyle, ...(colors[priority] || colors.medium) };
 }
+
 const TicketIcon = () => (
   <svg
     width="48"
@@ -202,6 +207,7 @@ const TicketIcon = () => (
     />
   </svg>
 );
+
 const DeleteIcon = () => (
   <svg
     width="14"
@@ -232,8 +238,7 @@ const DeleteIcon = () => (
       d="M14 10V17"
       stroke="currentColor"
       strokeWidth="1.5"
-      strokeLinecap="rou
-      nd"
+      strokeLinecap="round"
     />
     <path
       d="M8 7V4C8 3.44772 8.44772 3 9 3H15C15.5523 3 16 3.44772 16 4V7"
@@ -242,6 +247,7 @@ const DeleteIcon = () => (
     />
   </svg>
 );
+
 const LoadingSpinnerSmall = () => (
   <svg
     width="14"
@@ -300,6 +306,7 @@ const LoadingSpinnerSmall = () => (
     />
   </svg>
 );
+
 const StatusIcon = ({ status }) => {
   const icons = {
     pending: (
@@ -476,6 +483,34 @@ const PriorityIcon = ({ priority }) => {
         />
       </svg>
     ),
+    urgent: (
+      <svg
+        width="12"
+        height="12"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M12 9V13"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+        <path
+          d="M12 17H12.01"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+        <path
+          d="M7.31989 3.5L3.49989 7.32C2.24989 8.57 2.24989 10.57 3.49989 11.82L7.31989 15.64C8.06989 16.39 9.01989 16.83 9.99989 16.95V21C9.99989 21.55 10.4499 22 10.9999 22H12.9999C13.5499 22 13.9999 21.55 13.9999 21V16.95C14.9799 16.83 15.9299 16.39 16.6799 15.64L20.4999 11.82C21.7499 10.57 21.7499 8.57 20.4999 7.32L16.6799 3.5C15.4299 2.25 13.4299 2.25 12.1799 3.5L9.81989 5.86C9.33989 6.34 8.65989 6.34 8.17989 5.86L7.31989 3.5Z"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+      </svg>
+    ),
   };
   return icons[priority] || icons.medium;
 };
@@ -599,7 +634,6 @@ const LoadingSpinner = () => (
     />
   </svg>
 );
-
 
 const styles = {
   container: {
@@ -747,7 +781,6 @@ const styles = {
     fontSize: "16px",
   },
 };
-
 Object.assign(styles.ticket, {
   ":hover": {
     backgroundColor: "rgba(255,255,255,0.05)",
