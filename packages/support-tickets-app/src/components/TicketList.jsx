@@ -1,10 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 
 export default function TicketList({
   tickets,
   onTicketClick,
+  onDeleteTicket,
   loading = false,
+  showDeleteButton = true, 
 }) {
+  const [deletingId, setDeletingId] = useState(null);
+
+  const handleDeleteClick = async (ticket, e) => {
+    e.stopPropagation(); 
+    if (!onDeleteTicket) return;
+
+    setDeletingId(ticket._id);
+    try {
+      await onDeleteTicket(ticket._id);
+    } catch (error) {
+      console.error("Error deleting ticket:", error);
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   if (loading && tickets.length === 0) {
     return (
       <div style={styles.loading}>
@@ -13,6 +31,7 @@ export default function TicketList({
       </div>
     );
   }
+
   if (!loading && tickets.length === 0) {
     return (
       <div style={styles.empty}>
@@ -49,10 +68,30 @@ export default function TicketList({
                 </span>
               </div>
             </div>
-            <span style={getStatusStyle(ticket.status)}>
-              <StatusIcon status={ticket.status} />
-              {ticket.status}
-            </span>
+            <div style={styles.headerRight}>
+              <span style={getStatusStyle(ticket.status)}>
+                <StatusIcon status={ticket.status} />
+                {ticket.status}
+              </span>
+              {showDeleteButton && onDeleteTicket && (
+                <button
+                  style={
+                    deletingId === ticket._id
+                      ? { ...styles.deleteButton, ...styles.deleteButtonLoading }
+                      : styles.deleteButton
+                  }
+                  onClick={(e) => handleDeleteClick(ticket, e)}
+                  disabled={deletingId === ticket._id}
+                >
+                  {deletingId === ticket._id ? (
+                    <LoadingSpinnerSmall />
+                  ) : (
+                    <DeleteIcon />
+                  )}
+                  {deletingId === ticket._id ? "Deleting..." : "Delete"}
+                </button>
+              )}
+            </div>
           </div>
 
           <p style={styles.description}>
@@ -163,7 +202,104 @@ const TicketIcon = () => (
     />
   </svg>
 );
-
+const DeleteIcon = () => (
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M19 7L18.1327 19.1425C18.0579 20.1891 17.187 21 16.1378 21H7.86224C6.81296 21 5.94208 20.1891 5.86732 19.1425L5 7"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+    <path
+      d="M3 7H21"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+    <path
+      d="M10 10V17"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+    <path
+      d="M14 10V17"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="rou
+      nd"
+    />
+    <path
+      d="M8 7V4C8 3.44772 8.44772 3 9 3H15C15.5523 3 16 3.44772 16 4V7"
+      stroke="currentColor"
+      strokeWidth="1.5"
+    />
+  </svg>
+);
+const LoadingSpinnerSmall = () => (
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M12 2V6"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+    <path
+      d="M12 18V22"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+    <path
+      d="M4.93 4.93L7.76 7.76"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+    <path
+      d="M16.24 16.24L19.07 19.07"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+    <path
+      d="M2 12H6"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+    <path
+      d="M18 12H22"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+    <path
+      d="M4.93 19.07L7.76 16.24"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+    <path
+      d="M16.24 7.76L19.07 4.93"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+  </svg>
+);
 const StatusIcon = ({ status }) => {
   const icons = {
     pending: (
@@ -464,6 +600,7 @@ const LoadingSpinner = () => (
   </svg>
 );
 
+
 const styles = {
   container: {
     display: "flex",
@@ -478,6 +615,7 @@ const styles = {
     cursor: "pointer",
     transition: "all 0.3s ease",
     backdropFilter: "blur(10px)",
+    position: "relative",
   },
   ticketHeader: {
     display: "flex",
@@ -485,6 +623,11 @@ const styles = {
     alignItems: "flex-start",
     marginBottom: "12px",
     gap: "16px",
+  },
+  headerRight: {
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
   },
   titleSection: {
     flex: 1,
@@ -543,6 +686,26 @@ const styles = {
     gap: "4px",
     transition: "all 0.3s ease",
   },
+  deleteButton: {
+    padding: "6px 12px",
+    background: "rgba(239, 68, 68, 0.1)",
+    border: "1px solid rgba(239, 68, 68, 0.3)",
+    borderRadius: "6px",
+    fontSize: "12px",
+    fontWeight: "500",
+    color: "#ef4444",
+    cursor: "pointer",
+    transition: "all 0.3s ease",
+    display: "flex",
+    alignItems: "center",
+    gap: "4px",
+    whiteSpace: "nowrap",
+  },
+  deleteButtonLoading: {
+    background: "rgba(239, 68, 68, 0.2)",
+    color: "rgba(239, 68, 68, 0.7)",
+    cursor: "not-allowed",
+  },
   empty: {
     backgroundColor: "rgba(255,255,255,0.02)",
     border: "1px solid rgba(255,255,255,0.1)",
@@ -584,6 +747,7 @@ const styles = {
     fontSize: "16px",
   },
 };
+
 Object.assign(styles.ticket, {
   ":hover": {
     backgroundColor: "rgba(255,255,255,0.05)",
@@ -596,5 +760,13 @@ Object.assign(styles.ticket, {
 Object.assign(styles.viewDetails, {
   ":hover": {
     gap: "8px",
+  },
+});
+
+Object.assign(styles.deleteButton, {
+  ":hover": {
+    background: "rgba(239, 68, 68, 0.2)",
+    borderColor: "rgba(239, 68, 68, 0.5)",
+    transform: "translateY(-1px)",
   },
 });
