@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 
 export default function Header() {
   const { user, logout } = useAuth();
+  const [activeNav, setActiveNav] = useState("Dashboard");
+
+  const handleNavClick = (navItem) => {
+    setActiveNav(navItem);
+  };
 
   return (
     <header style={styles.header}>
@@ -15,10 +20,19 @@ export default function Header() {
         </div>
         <div style={styles.divider}></div>
         <nav style={styles.nav}>
-          <span style={styles.navItem}>Dashboard</span>
-          <span style={styles.navItem}>Support Tickets</span>
-          <span style={styles.navItem}>Analytics</span>
-          <span style={styles.navItem}>Settings</span>
+          {["Dashboard", "Support Tickets", "Analytics", "Settings"].map((item) => (
+            <span
+              key={item}
+              style={
+                activeNav === item
+                  ? { ...styles.navItem, ...styles.activeNavItem }
+                  : styles.navItem
+              }
+              onClick={() => handleNavClick(item)}
+            >
+              {item}
+            </span>
+          ))}
         </nav>
       </div>
 
@@ -46,6 +60,7 @@ export default function Header() {
     </header>
   );
 }
+
 const BuildingIcon = () => (
   <svg
     width="24"
@@ -187,6 +202,9 @@ const styles = {
     padding: "8px 0",
     position: "relative",
   },
+  activeNavItem: {
+    color: "#ffffff",
+  },
   userInfo: {
     display: "flex",
     alignItems: "center",
@@ -201,6 +219,7 @@ const styles = {
     border: "1px solid #333",
     borderRadius: "12px",
     transition: "all 0.3s ease",
+    cursor: "pointer",
   },
   userAvatar: {
     width: "40px",
@@ -259,52 +278,54 @@ const styles = {
     gap: "8px",
   },
 };
-Object.assign(styles.navItem, {
+const navItemHover = {
   ":hover": {
     color: "#ffffff",
   },
-  "::after": {
-    content: '""',
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    width: "0%",
-    height: "2px",
-    background: "linear-gradient(135deg, #00d4ff 0%, #0099ff 100%)",
-    transition: "width 0.3s ease",
-  },
-  ":hover::after": {
-    width: "100%",
-  },
-});
+};
 
-Object.assign(styles.userBadge, {
+const userBadgeHover = {
   ":hover": {
     background: "#333",
     borderColor: "#444",
     transform: "translateY(-1px)",
   },
-});
+};
 
-Object.assign(styles.logoutButton, {
+const logoutButtonHover = {
   ":hover": {
     background: "#dc2626",
     borderColor: "#dc2626",
     color: "#ffffff",
     transform: "translateY(-1px)",
   },
-});
-const activeNavItem = {
-  ...styles.navItem,
-  color: "#ffffff",
-  "::after": {
-    content: '""',
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    width: "100%",
-    height: "2px",
-    background: "linear-gradient(135deg, #00d4ff 0%, #0099ff 100%)",
-  },
 };
-styles.navItem = activeNavItem;
+Object.assign(styles.navItem, navItemHover);
+Object.assign(styles.userBadge, userBadgeHover);
+Object.assign(styles.logoutButton, logoutButtonHover);
+styles.navItem.position = "relative";
+styles.navItem[":after"] = {
+  content: '""',
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  width: "0%",
+  height: "2px",
+  background: "linear-gradient(135deg, #00d4ff 0%, #0099ff 100%)",
+  transition: "width 0.3s ease",
+};
+
+styles.navItem[":hover:after"] = {
+  width: "100%",
+};
+
+styles.activeNavItem.position = "relative";
+styles.activeNavItem[":after"] = {
+  content: '""',
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  width: "100%",
+  height: "2px",
+  background: "linear-gradient(135deg, #00d4ff 0%, #0099ff 100%)",
+};
