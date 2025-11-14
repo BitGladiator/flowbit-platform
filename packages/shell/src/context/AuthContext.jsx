@@ -47,7 +47,7 @@ export function AuthProvider({ children }) {
 
   const validateToken = async (token) => {
     try {
-      const response = await api.get('/auth/validate');
+      const response = await api.get('/me/profile'); 
       return response.status === 200;
     } catch (error) {
       return false;
