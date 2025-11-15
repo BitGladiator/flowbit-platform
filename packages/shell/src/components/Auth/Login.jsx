@@ -40,7 +40,13 @@ export default function Login() {
       } else {
         const result = await login(email, password);
         if (result.success) {
-          navigate("/dashboard");
+          const userData =
+            result.user || JSON.parse(localStorage.getItem("user"));
+          if (userData?.role === "Admin") {
+            navigate("/dashboard", { replace: true });
+          } else {
+            navigate("/my-dashboard", { replace: true });
+          }
         } else {
           setError(result.error);
         }
