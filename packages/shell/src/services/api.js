@@ -12,20 +12,21 @@ api.interceptors.request.use(
     console.log(`→ ${config.method.toUpperCase()} ${config.url}`);
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
+
 api.interceptors.response.use(
   (response) => {
     console.log(`← ${response.status} ${response.config.url}`);
     return response;
   },
   (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = '/login';
+    if (
+      error.response?.status === 401 &&
+      !error.config.url.includes('/auth/login') &&
+      !error.config.url.includes('/me/profile')
+    ) {
+      console.warn('Unauthorized request detected');
     }
     return Promise.reject(error);
   }

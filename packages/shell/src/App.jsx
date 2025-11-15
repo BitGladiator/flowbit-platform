@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './components/Auth/Login';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import Layout from './components/Layout/Layout';
@@ -9,10 +9,28 @@ import UserDashboard from './pages/UserDashboard';
 import EmployeeManagement from './pages/EmployeeManagement';
 import RemoteAppPage from './pages/RemoteAppPage';
 
+function AuthDebug() {
+  const { user, loading } = useAuth();
+  
+  React.useEffect(() => {
+    console.log('=== AUTH DEBUG ===');
+    console.log('User:', user);
+    console.log('Loading:', loading);
+    console.log('Token exists:', !!localStorage.getItem('token'));
+    console.log('User exists in storage:', !!localStorage.getItem('user'));
+    console.log('==================');
+  }, [user, loading]);
+
+  return null;
+}
+
 export default function App() {
+  console.log('App.jsx rendered');
+  
   return (
     <AuthProvider>
       <BrowserRouter>
+        <AuthDebug />
         <Routes>
           <Route path="/login" element={<Login />} />
           
