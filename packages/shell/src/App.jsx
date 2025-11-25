@@ -24,6 +24,24 @@ function AuthDebug() {
   return null;
 }
 
+function DefaultRedirect() {
+  const { user, loading } = useAuth();
+  
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+  
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  if (user.role === "Admin") {
+    return <Navigate to="/dashboard" replace />;
+  } else {
+    return <Navigate to="/my-dashboard" replace />;
+  }
+}
+
 export default function App() {
   console.log('App.jsx rendered');
   
@@ -78,7 +96,8 @@ export default function App() {
             }
           />
           
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+       
+          <Route path="/" element={<DefaultRedirect />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

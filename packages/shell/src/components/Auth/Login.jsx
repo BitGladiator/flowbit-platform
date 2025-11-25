@@ -18,7 +18,7 @@ export default function Login() {
     e.preventDefault();
     setError("");
     setLoading(true);
-
+  
     try {
       if (isRegister) {
         if (password !== confirmPassword) {
@@ -40,8 +40,11 @@ export default function Login() {
       } else {
         const result = await login(email, password);
         if (result.success) {
-          const userData =
-            result.user || JSON.parse(localStorage.getItem("user"));
+          const userData = result.user || JSON.parse(localStorage.getItem("user"));
+          
+
+          console.log("User role:", userData?.role); 
+          
           if (userData?.role === "Admin") {
             navigate("/dashboard", { replace: true });
           } else {
@@ -52,6 +55,7 @@ export default function Login() {
         }
       }
     } catch (err) {
+      console.error("Login error:", err);
       setError("An unexpected error occurred");
     } finally {
       setLoading(false);

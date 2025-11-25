@@ -54,6 +54,7 @@ export default function Sidebar() {
           <DashboardIcon />
           <span>Dashboard</span>
         </Link>
+
         {user?.role === "Admin" && (
           <Link
             to="/employees"
@@ -65,7 +66,7 @@ export default function Sidebar() {
             }}
           >
             <UsersIcon />
-            <span>Employees</span>
+            <span>Employee</span>
           </Link>
         )}
 
