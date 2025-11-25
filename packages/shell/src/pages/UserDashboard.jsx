@@ -57,7 +57,6 @@ export default function UserDashboard() {
 
   return (
     <div style={styles.container}>
-      {/* Welcome Header */}
       <div style={styles.header}>
         <div style={styles.welcomeSection}>
           <h1 style={styles.title}>
@@ -77,7 +76,6 @@ export default function UserDashboard() {
         </button>
       </div>
 
-      {/* Stats Cards */}
       <div style={styles.statsGrid}>
         <div style={styles.statCard}>
           <div style={styles.statIcon}>
@@ -119,8 +117,6 @@ export default function UserDashboard() {
           </div>
         </div>
       </div>
-
-      {/* Recent Tickets Section */}
       <div style={styles.section}>
         <div style={styles.sectionHeader}>
           <h2 style={styles.sectionTitle}>
@@ -213,7 +209,6 @@ export default function UserDashboard() {
         )}
       </div>
 
-      {/* Quick Actions */}
       <div style={styles.section}>
         <h2 style={styles.sectionTitle}>
           <RocketIcon />
@@ -265,7 +260,6 @@ export default function UserDashboard() {
   );
 }
 
-// SVG Icons
 const UserIcon = () => (
   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
@@ -724,7 +718,6 @@ const styles = {
   },
 };
 
-// Add hover effects
 Object.assign(styles.createButton, {
   ':hover': {
     transform: 'translateY(-2px)',

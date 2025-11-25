@@ -1330,7 +1330,6 @@ const styles = {
   },
 };
 
-// Add hover effects
 Object.assign(styles.inviteButton, {
   ":hover": {
     transform: "translateY(-2px)",
