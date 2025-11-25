@@ -14,7 +14,7 @@ module.exports = {
     watchFiles: {
       paths: ['src/**/*'],
       options: {
-        usePolling: true, 
+        usePolling: true,
       },
     },
     client: {
@@ -34,7 +34,7 @@ module.exports = {
     publicPath: 'http://localhost:3002/',
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].[contenthash].js',
-    clean: true, // Clean the output directory before emit
+    clean: true,
   },
   cache: {
     type: 'filesystem',
@@ -64,14 +64,22 @@ module.exports = {
   },
   plugins: [
     new ModuleFederationPlugin({
-      name: 'supportTicketsApp',
+      name: 'supportTicketsApp', 
       filename: 'remoteEntry.js',
       exposes: {
         './App': './src/App',
       },
       shared: {
-        react: { singleton: true, eager: true, requiredVersion: '^18.2.0' },
-        'react-dom': { singleton: true, eager: true, requiredVersion: '^18.2.0' },
+        react: { 
+          singleton: true, 
+          requiredVersion: '^18.2.0',
+          eager: false  
+        },
+        'react-dom': { 
+          singleton: true, 
+          requiredVersion: '^18.2.0',
+          eager: false  
+        },
       },
     }),
     new HtmlWebpackPlugin({
