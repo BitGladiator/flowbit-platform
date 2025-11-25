@@ -5,18 +5,29 @@ const ticketRoutes = require('./routes/tickets');
 const userRoutes = require('./routes/users');
 const webhookRoutes = require('./routes/webhooks');
 const employeeRoutes = require('./routes/employees');
+const messageRoutes = require('./routes/messages');
+
 const app = express();
-app.use(cors()); 
+
+app.use(cors({
+  origin: ['http://localhost:3000', 'http://localhost:3002'],
+  credentials: true
+}));
+
 app.use(express.json());
+
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.path}`);
   next();
 });
+
 app.use('/api/auth', authRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/me', userRoutes);
 app.use('/api/employees', employeeRoutes);
 app.use('/api/webhook', webhookRoutes);
+app.use('/api/messages', messageRoutes);
+
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'ok',
@@ -24,9 +35,11 @@ app.get('/health', (req, res) => {
     uptime: process.uptime()
   });
 });
+
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
+
 app.use((err, req, res, next) => {
   console.error('Error:', err);
   res.status(500).json({ error: 'Internal server error' });

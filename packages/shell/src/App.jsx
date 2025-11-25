@@ -7,6 +7,7 @@ import Layout from './components/Layout/Layout';
 import Dashboard from './pages/Dashboard';
 import UserDashboard from './pages/UserDashboard';
 import EmployeeManagement from './pages/EmployeeManagement';
+import Chat from './pages/Chat';
 import RemoteAppPage from './pages/RemoteAppPage';
 
 function AuthDebug() {
@@ -84,6 +85,17 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route
+            path="/chat"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <Chat />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
           
           <Route
             path="/app/:appId"
@@ -96,7 +108,6 @@ export default function App() {
             }
           />
           
-       
           <Route path="/" element={<DefaultRedirect />} />
         </Routes>
       </BrowserRouter>

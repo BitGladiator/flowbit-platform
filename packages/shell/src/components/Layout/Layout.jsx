@@ -26,11 +26,13 @@ const styles = {
     display: 'flex',
     flex: 1,
     overflow: 'hidden',
+   
   },
   content: {
     flex: 1,
-
+    marginLeft: '280px',
     background: '#f5f5f5',
     overflow: 'auto',
+   
   },
 };

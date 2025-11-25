@@ -1,5 +1,6 @@
-import React, { createContext, useState, useContext, useEffect, useCallback } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 import api from "../services/api";
+import socketService from "../services/socket";
 
 const AuthContext = createContext();
 
@@ -7,61 +8,47 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const updateAuthHeaders = useCallback((token) => {
-    if (token) {
-      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    } else {
-      delete api.defaults.headers.common["Authorization"];
-    }
-  }, []);
-
-  const clearSession = useCallback(() => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    updateAuthHeaders(null);
-    setUser(null);
-  }, [updateAuthHeaders]);
-
-  const validateToken = useCallback(async (token) => {
-    try {
-      updateAuthHeaders(token);
-      await api.get("/me/profile");
-      return true;
-    } catch (error) {
-      if (error.response?.status === 401 || error.response?.status === 403) {
-        clearSession();
-        return false;
-      }
-      return true;
-    }
-  }, [clearSession, updateAuthHeaders]);
-
   useEffect(() => {
     const restoreSession = async () => {
       const token = localStorage.getItem("token");
       const savedUser = localStorage.getItem("user");
 
-      if (!token || !savedUser) {
-        setLoading(false);
-        return;
+      if (token && savedUser) {
+        try {
+          const parsedUser = JSON.parse(savedUser);
+          api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+          
+          setUser(parsedUser);
+          
+          socketService.connect(token);
+          
+          try {
+            await api.get("/me/profile");
+          } catch (error) {
+            if (error.response?.status === 401 || error.response?.status === 403) {
+              console.log("Token expired or invalid, clearing session");
+              localStorage.removeItem("token");
+              localStorage.removeItem("user");
+              delete api.defaults.headers.common["Authorization"];
+              socketService.disconnect();
+              setUser(null);
+            }
+          }
+        } catch (parseError) {
+          console.error("Failed to parse user data:", parseError);
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          delete api.defaults.headers.common["Authorization"];
+          socketService.disconnect();
+          setUser(null);
+        }
       }
 
-      try {
-        const parsedUser = JSON.parse(savedUser);
-        const isValid = await validateToken(token);
-        
-        if (isValid) {
-          setUser(parsedUser);
-        }
-      } catch (error) {
-        clearSession();
-      } finally {
-        setLoading(false);
-      }
+      setLoading(false);
     };
 
     restoreSession();
-  }, [clearSession, validateToken]);
+  }, []);
 
   const login = async (email, password) => {
     try {
@@ -79,43 +66,37 @@ export function AuthProvider({ children }) {
 
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(safeUserData));
-      updateAuthHeaders(token);
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       setUser(safeUserData);
+
+      socketService.connect(token);
 
       return { success: true, user: safeUserData };
     } catch (error) {
       return {
         success: false,
-        error: error.response?.data?.error || "Login failed. Please try again.",
+        error:
+          error.response?.data?.error ||
+          error.message ||
+          "Login failed. Please try again.",
       };
     }
   };
 
-  const logout = useCallback(() => {
-    clearSession();
-  }, [clearSession]);
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    delete api.defaults.headers.common["Authorization"];
+    socketService.disconnect();
+    setUser(null);
+  };
 
   const refreshToken = async () => {
     try {
       const response = await api.post("/auth/refresh");
-      const { token, user: userData } = response.data;
-      
+      const { token } = response.data;
       localStorage.setItem("token", token);
-      
-      if (userData) {
-        const safeUserData = {
-          id: userData.id,
-          email: userData.email,
-          customerId: userData.customerId,
-          role: userData.role,
-          firstName: userData.firstName,
-          lastName: userData.lastName,
-        };
-        localStorage.setItem("user", JSON.stringify(safeUserData));
-        setUser(safeUserData);
-      }
-      
-      updateAuthHeaders(token);
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       return true;
     } catch (error) {
       logout();
@@ -129,7 +110,6 @@ export function AuthProvider({ children }) {
     logout,
     loading,
     refreshToken,
-    isAuthenticated: !!user,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
