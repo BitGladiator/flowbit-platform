@@ -35,6 +35,12 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].[contenthash].js',
     clean: true,
+    // ADD THIS - CRITICAL FIX
+    uniqueName: 'supportTicketsApp',
+    library: {
+      type: 'var',
+      name: 'supportTicketsApp'
+    }
   },
   cache: {
     type: 'filesystem',
@@ -67,18 +73,18 @@ module.exports = {
       name: 'supportTicketsApp', 
       filename: 'remoteEntry.js',
       exposes: {
-        './App': './src/App',
+        './App': './src/App.jsx', // Use explicit extension
       },
       shared: {
         react: { 
           singleton: true, 
           requiredVersion: '^18.2.0',
-          eager: false  
+          eager: true
         },
         'react-dom': { 
           singleton: true, 
           requiredVersion: '^18.2.0',
-          eager: false  
+          eager: true
         },
       },
     }),
@@ -93,6 +99,7 @@ module.exports = {
   },
   optimization: {
     moduleIds: 'named',
+    chunkIds: 'named', // Add this
     runtimeChunk: 'single',
   },
   devtool: 'eval-source-map',

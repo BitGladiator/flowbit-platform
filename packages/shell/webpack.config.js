@@ -49,7 +49,7 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: [
-              ['@babel/preset-react', { runtime: 'automatic' }] // CHANGED: Added automatic runtime
+              ['@babel/preset-react', { runtime: 'automatic' }]
             ],
             cacheDirectory: true,
             cacheCompression: false,
@@ -78,20 +78,21 @@ module.exports = {
         react: { 
           singleton: true, 
           requiredVersion: '^18.2.0',
-          eager: true  // CHANGED: From false to true
+          eager: true  
         },
         'react-dom': { 
           singleton: true, 
           requiredVersion: '^18.2.0',
-          eager: true  // CHANGED: From false to true
+          eager: true  
         },
         'react-router-dom': { 
           singleton: true, 
           requiredVersion: '^6.20.0',
-          eager: true  // CHANGED: From false to true
+          eager: true  // ✅ CHANGE to true for host
         },
       },
     }),
+    
     new HtmlWebpackPlugin({
       template: './public/index.html',
       inject: true,
