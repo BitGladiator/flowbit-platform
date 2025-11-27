@@ -14,7 +14,7 @@ module.exports = {
     watchFiles: {
       paths: ['src/**/*'],
       options: {
-        usePolling: true,
+        usePolling: false,
       },
     },
     client: {
@@ -33,7 +33,8 @@ module.exports = {
   output: {
     publicPath: 'http://localhost:3000/',
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].[contenthash].js',
+    filename: '[name].js',
+    chunkFilename: '[name].js',
     clean: true,
   },
   cache: {
@@ -78,21 +79,23 @@ module.exports = {
         react: { 
           singleton: true, 
           requiredVersion: '^18.2.0',
-          eager: true  
+          eager: true,
+          strictVersion: false,
         },
         'react-dom': { 
           singleton: true, 
           requiredVersion: '^18.2.0',
-          eager: true  
+          eager: true,
+          strictVersion: false,
         },
         'react-router-dom': { 
           singleton: true, 
           requiredVersion: '^6.20.0',
-          eager: true  // ✅ CHANGE to true for host
+          eager: true,
+          strictVersion: false,
         },
       },
     }),
-    
     new HtmlWebpackPlugin({
       template: './public/index.html',
       inject: true,
@@ -103,8 +106,8 @@ module.exports = {
     extensions: ['.js', '.jsx', '.json'],
   },
   optimization: {
-    moduleIds: 'named',
-    runtimeChunk: 'single',
+    runtimeChunk: false,
+    splitChunks: false,
   },
   devtool: 'eval-source-map',
 };

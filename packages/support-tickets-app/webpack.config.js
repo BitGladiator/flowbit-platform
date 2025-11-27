@@ -14,7 +14,7 @@ module.exports = {
     watchFiles: {
       paths: ['src/**/*'],
       options: {
-        usePolling: true,
+        usePolling: false,
       },
     },
     client: {
@@ -33,14 +33,9 @@ module.exports = {
   output: {
     publicPath: 'http://localhost:3002/',
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].[contenthash].js',
+    filename: '[name].js',
+    chunkFilename: '[name].js',
     clean: true,
-    // ADD THIS - CRITICAL FIX
-    uniqueName: 'supportTicketsApp',
-    library: {
-      type: 'var',
-      name: 'supportTicketsApp'
-    }
   },
   cache: {
     type: 'filesystem',
@@ -70,21 +65,23 @@ module.exports = {
   },
   plugins: [
     new ModuleFederationPlugin({
-      name: 'supportTicketsApp', 
+      name: 'supportTicketsApp',
       filename: 'remoteEntry.js',
       exposes: {
-        './App': './src/App.jsx', // Use explicit extension
+        './App': './src/App.jsx',
       },
       shared: {
         react: { 
           singleton: true, 
           requiredVersion: '^18.2.0',
-          eager: true
+          eager: false,
+          strictVersion: false,
         },
         'react-dom': { 
           singleton: true, 
           requiredVersion: '^18.2.0',
-          eager: true
+          eager: false,
+          strictVersion: false,
         },
       },
     }),
@@ -98,9 +95,8 @@ module.exports = {
     extensions: ['.js', '.jsx'],
   },
   optimization: {
-    moduleIds: 'named',
-    chunkIds: 'named', // Add this
-    runtimeChunk: 'single',
+    runtimeChunk: false,
+    splitChunks: false,
   },
   devtool: 'eval-source-map',
 };
