@@ -55,7 +55,6 @@ export default function Sidebar() {
           <DashboardIcon />
           <span>Dashboard</span>
         </Link>
-
         {user?.role === "Admin" && (
           <Link
             to="/employees"
@@ -70,7 +69,6 @@ export default function Sidebar() {
             <span>Employees</span>
           </Link>
         )}
-
         <Link
           to="/chat"
           style={{
@@ -81,7 +79,6 @@ export default function Sidebar() {
           <ChatIcon />
           <span>Messages</span>
         </Link>
-
         {screens.map((screen) => (
           <Link
             key={screen.id}

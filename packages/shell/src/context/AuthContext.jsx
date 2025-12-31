@@ -10,41 +10,71 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const restoreSession = async () => {
-      const token = localStorage.getItem("token");
-      const savedUser = localStorage.getItem("user");
+      try {
+        const token = localStorage.getItem("token");
+        const savedUser = localStorage.getItem("user");
 
-      if (token && savedUser) {
-        try {
-          const parsedUser = JSON.parse(savedUser);
-          api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-          
-          setUser(parsedUser);
-          
-          socketService.connect(token);
-          
+        console.log("Restoring session...");
+        console.log("Token exists:", !!token);
+        console.log("Saved user exists:", !!savedUser);
+
+        if (token && savedUser) {
           try {
-            await api.get("/me/profile");
-          } catch (error) {
-            if (error.response?.status === 401 || error.response?.status === 403) {
-              console.log("Token expired or invalid, clearing session");
-              localStorage.removeItem("token");
-              localStorage.removeItem("user");
-              delete api.defaults.headers.common["Authorization"];
-              socketService.disconnect();
-              setUser(null);
+            const parsedUser = JSON.parse(savedUser);
+            console.log("Parsed user:", parsedUser);
+            api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+          
+            try {
+              const response = await api.get("/me/profile");
+              console.log("Token is valid, profile verified:", response.data);
+            
+              const verifiedUser = {
+                id: response.data.userId || parsedUser.id,
+                email: response.data.email || parsedUser.email,
+                customerId: response.data.customerId || parsedUser.customerId,
+                role: response.data.role || parsedUser.role,
+                firstName: parsedUser.firstName,
+                lastName: parsedUser.lastName,
+              };
+              
+              setUser(verifiedUser);
+            
+              socketService.connect(token);
+              
+            } catch (verifyError) {
+              console.error("Token verification failed:", verifyError.response?.status);
+              
+              if (verifyError.response?.status === 401 || verifyError.response?.status === 403) {
+                console.log("Token expired or invalid, clearing session");
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+                delete api.defaults.headers.common["Authorization"];
+                socketService.disconnect();
+                setUser(null);
+              } else {
+                console.log("Verification failed but setting user anyway");
+                setUser(parsedUser);
+                socketService.connect(token);
+              }
             }
+          } catch (parseError) {
+            console.error("Failed to parse user data:", parseError);
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            delete api.defaults.headers.common["Authorization"];
+            socketService.disconnect();
+            setUser(null);
           }
-        } catch (parseError) {
-          console.error("Failed to parse user data:", parseError);
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
-          delete api.defaults.headers.common["Authorization"];
-          socketService.disconnect();
-          setUser(null);
+        } else {
+          console.log("No saved session found");
         }
+      } catch (error) {
+        console.error("Session restoration error:", error);
+        setUser(null);
+      } finally {
+        setLoading(false);
+        console.log("Session restoration complete");
       }
-
-      setLoading(false);
     };
 
     restoreSession();
@@ -52,6 +82,7 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     try {
+      console.log("🔐 Attempting login for:", email);
       const response = await api.post("/auth/login", { email, password });
       const { token, user: userData } = response.data;
 
@@ -64,15 +95,19 @@ export function AuthProvider({ children }) {
         lastName: userData.lastName,
       };
 
+      console.log("Login successful:", safeUserData);
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(safeUserData));
+      
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    
       setUser(safeUserData);
 
       socketService.connect(token);
 
       return { success: true, user: safeUserData };
     } catch (error) {
+      console.error("Login failed:", error);
       return {
         success: false,
         error:
@@ -84,6 +119,7 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
+    console.log("Logging out");
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     delete api.defaults.headers.common["Authorization"];
